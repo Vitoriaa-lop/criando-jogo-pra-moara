@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Vale das Estrelas</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+
+<div id="game-container">
+  <header>
+    <h1>🌻 Vale das Estrelas</h1>
+  </header>
+
+  <div class="stats-bar">
+    <div>📅 Dia: <span id="day">1</span></div>
+    <div>⏰ Hora: <span id="time">06:00</span></div>
+    <div>⭐ Nível: <span id="level">1</span> (<span id="xp">0</span> XP)</div>
+    <div>❤️ Energia: <span id="energy">100</span>/100</div>
+    <div>💰 Ouro: <span id="gold">50</span>g</div>
+  </div>
+
+  <div class="main-screen">
+    <div>
+      <div id="location-title">🏡 Fazenda</div>
+      <div id="log-text">Você acorda em sua fazenda. O ar está fresco e o dia promete!</div>
+    </div>
+  </div>
+
+  <div class="inventory-sec">
+    <h3>🎒 Inventário</h3>
+    <div id="inventory-list"></div>
+  </div>
+
+  <div class="controls">
+    <button onclick="actionExplore()">🗺️ Explorar Local</button>
+    <button onclick="actionRest()">🛏️ Descansar (Passa o Dia)</button>
+    <button onclick="changeLocation()">📍 Mudar de Região</button>
+    <button onclick="actionWork()">⛏️ Trabalhar na Terra</button>
+  </div>
+</div>
+
+<script src="script.js"></script>
+</body>
+</html>
