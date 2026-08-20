@@ -1,8 +1,8 @@
 // Estado do Jogador
 const estadoJogo = {
   casoAtual: 1,
-  pistas: [], // Ex: 'nome_quimico', 'mapa_rotas'
-  escolhas: {} // Guarda o histórico de decisões
+  pistas: [],
+  escolhas: {}
 };
 
 // Árvore de Decisão por Casos
@@ -43,7 +43,6 @@ const casos = {
       const opcoes = [
         { texto: "Perseguir o Comprador (Alta Sociedade)", proximo: "caso2_opcA" }
       ];
-      // Habilita o uso do mapa se pegou no Caso 1
       if (estadoJogo.pistas.includes("Mapa das Rotas")) {
         opcoes.push({ texto: "Buscar o Depósito Escondido (Usar Mapa)", proximo: "caso2_opcB" });
       } else {
@@ -159,18 +158,14 @@ function carregarCena(chaveCena) {
 
   const cena = casos[chaveCena];
 
-  // Executa ações da cena se houver
   if (cena.acao) cena.acao();
 
-  // Atualiza Interface
   document.getElementById("titulo-caso").innerText = cena.titulo;
   document.getElementById("texto-cena").innerText = cena.gerarTexto ? cena.gerarTexto() : cena.texto;
 
-  // Atualiza Inventário de Pistas
   const PainelPistas = document.getElementById("lista-pistas");
   PainelPistas.innerHTML = estadoJogo.pistas.map(p => `<li>${p}</li>`).join("");
 
-  // Atualiza Botões
   const conteinerBotoes = document.getElementById("botoes-escolhas");
   conteinerBotoes.innerHTML = "";
 
