@@ -3,49 +3,18 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Agência de Detetives - Arquivos de Casos</title>
+  <title>Detetive - Fluxograma</title>
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
-
   <div id="game-container">
-    <header>
-      <h1>AGÊNCIA DE DETETIVES</h1>
-      <p class="intro">Bem-vindo à agência, Detetive. Você tem uma mesa cheia de arquivos e a cidade conta com a sua dedicação.</p>
-    </header>
+    <h1>AGÊNCIA DE DETETIVES</h1>
+    
+    <div id="painel-narrativa">
+      <p id="texto-cena"></p>
+    </div>
 
-    <main>
-      <!-- Seção do Caso -->
-      <section class="card">
-        <h2 id="caso-titulo"></h2>
-        <p id="caso-descricao"></p>
-      </section>
-
-      <!-- Painel do Jogo -->
-      <div id="painel-jogo">
-        <!-- Pistas -->
-        <section class="card">
-          <h3>Pistas na Cena do Crime</h3>
-          <ul id="lista-pistas"></ul>
-        </section>
-
-        <!-- Suspeitos -->
-        <section class="card">
-          <h3>Suspeitos</h3>
-          <div id="lista-suspeitos"></div>
-        </section>
-      </div>
-
-      <!-- Ações do Detetive -->
-      <section class="card">
-        <h3>Investigação e Ações</h3>
-        <p id="texto-interacao">Escolha uma ação para investigar ou faça sua acusação quando tiver certeza:</p>
-        <div id="botoes-acoes"></div>
-      </section>
-
-      <!-- Resultado da Investigação/Acusação -->
-      <div id="resultado" class="card hidden"></div>
-    </main>
+    <div id="botoes-escolhas"></div>
   </div>
 
   <script src="app.js"></script>

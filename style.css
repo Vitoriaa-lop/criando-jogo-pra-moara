@@ -1,9 +1,3 @@
-* {
-  box-sizing: border-box;
-  margin: 0;
-  padding: 0;
-}
-
 body {
   background-color: #121212;
   color: #e0e0e0;
@@ -14,95 +8,43 @@ body {
 }
 
 #game-container {
-  max-width: 800px;
+  max-width: 600px;
   width: 100%;
+  background: #1e1e1e;
+  padding: 20px;
+  border-radius: 8px;
+  border: 1px solid #333;
 }
 
-header {
+h1 {
+  color: #f1c40f;
   text-align: center;
   margin-bottom: 20px;
-  border-bottom: 2px solid #444;
-  padding-bottom: 15px;
+  font-size: 22px;
 }
 
-header h1 {
-  color: #f1c40f;
-  letter-spacing: 2px;
-}
-
-.intro {
-  font-style: italic;
-  color: #aaa;
-  margin-top: 5px;
-}
-
-.card {
-  background-color: #1e1e1e;
-  border: 1px solid #333;
+#painel-narrativa {
+  background: #2a2a2a;
   padding: 15px;
-  margin-bottom: 15px;
-  border-radius: 6px;
+  border-radius: 5px;
+  margin-bottom: 20px;
+  white-space: pre-line;
+  line-height: 1.5;
 }
 
-h2, h3 {
-  color: #e74c3c;
-  margin-bottom: 10px;
-}
-
-ul {
-  padding-left: 20px;
-}
-
-li {
-  margin-bottom: 8px;
-}
-
-.suspeito-item {
-  background-color: #2a2a2a;
-  padding: 10px;
-  margin-bottom: 8px;
-  border-left: 4px solid #f39c12;
-  border-radius: 4px;
-}
-
-.btn {
-  background-color: #2c3e50;
+.btn-opcao {
+  background: #2c3e50;
   color: #fff;
   border: 1px solid #34495e;
-  padding: 10px 15px;
-  margin: 5px 0;
+  padding: 12px;
+  margin-bottom: 10px;
   width: 100%;
   cursor: pointer;
   text-align: left;
   font-family: inherit;
-  font-size: 14px;
   border-radius: 4px;
-  transition: background-color 0.2s;
 }
 
-.btn:hover {
-  background-color: #3498db;
-}
-
-.btn-acusar {
-  background-color: #c0392b;
-  border-color: #e74c3c;
-}
-
-.btn-acusar:hover {
-  background-color: #e74c3c;
-}
-
-.hidden {
-  display: none;
-}
-
-#resultado {
-  border-left: 5px solid #27ae60;
-  background-color: #1b2a1e;
-}
-
-#resultado.erro {
-  border-left-color: #e74c3c;
-  background-color: #2a1b1b;
+.btn-opcao:hover {
+  background: #3498db;
 }
