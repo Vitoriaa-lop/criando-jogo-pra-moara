@@ -1,42 +1,27 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Fazendinha - Vale das Estrelas</title>
-  <link rel="stylesheet" href="style.css" />
+  <meta charset="UTF-8">
+  <title>Agência de Detetives</title>
+  <link rel="stylesheet" href="style.css">
 </head>
 <body>
+  <div id="game-container">
+    <h1 id="caso-titulo">Carregando...</h1>
+    <p id="caso-descricao"></p>
+    
+    <div id="pistas-container">
+      <h3>Pistas Encontradas:</h3>
+      <ul id="lista-pistas"></ul>
+    </div>
 
-<div id="game-container">
-  <header>
-    <h1>🌾 Minha Fazendinha</h1>
-  </header>
+    <div id="suspeitos-container">
+      <h3>Suspeitos:</h3>
+      <div id="lista-suspeitos"></div>
+    </div>
 
-  <div class="stats-bar">
-    <div>📅 Dia: <span id="day">1</span></div>
-    <div>⏰ Hora: <span id="time">06:00</span></div>
-    <div>❤️ Energia: <span id="energy">100</span>/100</div>
-    <div>💰 Ouro: <span id="gold">50</span>g</div>
+    <div id="resultado"></div>
   </div>
-
-  <div class="farm-grid" id="farm-grid"></div>
-
-  <div class="inventory-sec">
-    <h3>🎒 Sementes & Colheita</h3>
-    <div id="inventory-list"></div>
-  </div>
-
-  <div class="controls">
-    <button onclick="buySeed('trigo', 10)">🛒 Comprar Trigo (10g)</button>
-    <button onclick="buySeed('tomate', 25)">🛒 Comprar Tomate (25g)</button>
-    <button onclick="sellAll()">💰 Vender Colheita</button>
-    <button onclick="actionRest()">🛏️ Dormir (Passar Dia)</button>
-  </div>
-
-  <div id="log-text">Bem-vindo à sua terra! Clique em um canteiro para plantar.</div>
-</div>
-
-<script src="script.js"></script>
+  <script src="app.js"></script>
 </body>
 </html>
