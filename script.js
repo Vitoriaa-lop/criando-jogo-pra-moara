@@ -1,68 +1,26 @@
-const locations = ["Fazenda", "Floresta", "Mina", "Vila"];
-let currentLocationIndex = 0;
+const cropsData = {
+  trigo: { name: "Trigo", growDays: 1, icon: "🌾", buyPrice: 10, sellPrice: 20 },
+  tomate: { name: "Tomate", growDays: 2, icon: "🍅", buyPrice: 25, sellPrice: 55 }
+};
 
 let gameState = {
   day: 1,
   hour: 6,
-  level: 1,
-  xp: 0,
   energy: 100,
   gold: 50,
-  inventory: {
-    madeira: 0,
-    pedra: 0,
-    minerio: 0,
-    frutas: 2,
-    sementes: 3
-  }
-};
-
-const rewards = {
-  "Fazenda": [
-    { name: "sementes", amount: 1, xp: 5, msg: "Você achou sementes secas no solo!" },
-    { name: "frutas", amount: 1, xp: 5, msg: "Você colheu uma fruta silvestre!" }
-  ],
-  "Floresta": [
-    { name: "madeira", amount: 2, xp: 10, msg: "Você cortou troncos velhos e conseguiu madeira." },
-    { name: "frutas", amount: 2, xp: 8, msg: "Você encontrou arbustos repletos de frutas!" }
-  ],
-  "Mina": [
-    { name: "pedra", amount: 2, xp: 12, msg: "Você quebrou algumas pedras grandes." },
-    { name: "minerio", amount: 1, xp: 20, msg: "Sorte! Você encontrou um minério reluzente." }
-  ],
-  "Vila": [
-    { name: "gold", amount: 15, xp: 5, msg: "Você ajudou um morador e ganhou umas moedas de ouro." }
-  ]
+  seeds: { trigo: 2, tomate: 0 },
+  harvest: { trigo: 0, tomate: 0 },
+  plots: Array(6).fill(null).map(() => ({ crop: null, dayPlanted: 0, watered: false, ready: false }))
 };
 
 function loadGame() {
-  const saved = localStorage.getItem("valedasestrelas_save");
-  if (saved) {
-    gameState = JSON.parse(saved);
-  }
+  const saved = localStorage.getItem("fazendinha_save");
+  if (saved) gameState = JSON.parse(saved);
   updateUI();
 }
 
 function saveGame() {
-  localStorage.setItem("valedasestrelas_save", JSON.stringify(gameState));
-}
-
-function addTime(hours) {
-  gameState.hour += hours;
-  if (gameState.hour >= 22) {
-    log("Está ficando muito tarde e você desmaiou de cansaço!");
-    autoSleep();
-  }
-  updateUI();
-}
-
-function addXP(amount) {
-  gameState.xp += amount;
-  if (gameState.xp >= gameState.level * 50) {
-    gameState.xp -= gameState.level * 50;
-    gameState.level++;
-    log(`🎉 Você subiu para o Nível ${gameState.level}!`);
-  }
+  localStorage.setItem("fazendinha_save", JSON.stringify(gameState));
 }
 
 function log(msg) {
@@ -72,80 +30,139 @@ function log(msg) {
 function updateUI() {
   document.getElementById("day").innerText = gameState.day;
   document.getElementById("time").innerText = `${String(gameState.hour).padStart(2, '0')}:00`;
-  document.getElementById("level").innerText = gameState.level;
-  document.getElementById("xp").innerText = gameState.xp;
   document.getElementById("energy").innerText = gameState.energy;
   document.getElementById("gold").innerText = gameState.gold;
-  document.getElementById("location-title").innerText = `📍 ${locations[currentLocationIndex]}`;
 
-  const invContainer = document.getElementById("inventory-list");
-  invContainer.innerHTML = "";
-  
-  const icons = { madeira: "🪵", pedra: "🪨", minerio: "💎", frutas: "🍓", sementes: "🌾" };
-  
-  for (const [item, qty] of Object.entries(gameState.inventory)) {
-    if (qty > 0) {
-      const tag = document.createElement("div");
-      tag.className = "item-tag";
-      tag.innerText = `${icons[item] || ''} ${item}: ${qty}`;
-      invContainer.appendChild(tag);
+  // Renderizar Inventário
+  const inv = document.getElementById("inventory-list");
+  inv.innerHTML = `
+    <span>🌾 Sementes Trigo: ${gameState.seeds.trigo}</span> | 
+    <span>🍅 Sementes Tomate: ${gameState.seeds.tomate}</span> | 
+    <span>📦 Frutos: ${gameState.harvest.trigo + gameState.harvest.tomate}</span>
+  `;
+
+  // Renderizar Canteiros
+  const grid = document.getElementById("farm-grid");
+  grid.innerHTML = "";
+
+  gameState.plots.forEach((plot, index) => {
+    const div = document.createElement("div");
+    div.className = `plot ${plot.watered ? 'watered' : ''}`;
+    
+    if (!plot.crop) {
+      div.innerText = "🟫";
+    } else if (plot.ready) {
+      div.innerText = cropsData[plot.crop].icon;
+    } else {
+      div.innerText = "🌱";
     }
-  }
+
+    div.onclick = () => interactPlot(index);
+    grid.appendChild(div);
+  });
+
   saveGame();
 }
 
-function actionExplore() {
-  if (gameState.energy < 10) {
-    log("Você está sem energia! Precisa descansar.");
+function interactPlot(index) {
+  const plot = gameState.plots[index];
+
+  if (gameState.energy < 5) {
+    log("Você está muito cansado! Vá dormir.");
     return;
   }
 
-  const loc = locations[currentLocationIndex];
-  const possibleRewards = rewards[loc];
-  const loot = possibleRewards[Math.floor(Math.random() * possibleRewards.length)];
+  // Colher
+  if (plot.ready) {
+    gameState.harvest[plot.crop]++;
+    log(`Você colheu ${cropsData[plot.crop].name}!`);
+    gameState.plots[index] = { crop: null, dayPlanted: 0, watered: false, ready: false };
+    gameState.energy -= 5;
+    addTime(1);
+    return;
+  }
 
-  gameState.energy -= 10;
-  addXP(loot.xp);
+  // Plantar
+  if (!plot.crop) {
+    if (gameState.seeds.trigo > 0) {
+      gameState.seeds.trigo--;
+      plot.crop = "trigo";
+      log("Você plantou Trigo!");
+    } else if (gameState.seeds.tomate > 0) {
+      gameState.seeds.tomate--;
+      plot.crop = "tomate";
+      log("Você plantou Tomate!");
+    } else {
+      log("Você não tem sementes! Compre mais na loja.");
+      return;
+    }
+    plot.dayPlanted = gameState.day;
+    gameState.energy -= 5;
+    addTime(1);
+    return;
+  }
 
-  if (loot.name === "gold") {
-    gameState.gold += loot.amount;
+  // Regar
+  if (plot.crop && !plot.watered) {
+    plot.watered = true;
+    gameState.energy -= 5;
+    log("Você regou a planta.");
+    addTime(1);
+  }
+}
+
+function buySeed(type, price) {
+  if (gameState.gold >= price) {
+    gameState.gold -= price;
+    gameState.seeds[type]++;
+    log(`Comprou 1 semente de ${type}!`);
+    updateUI();
   } else {
-    gameState.inventory[loot.name] = (gameState.inventory[loot.name] || 0) + loot.amount;
+    log("Ouro insuficiente!");
   }
-
-  log(loot.msg);
-  addTime(2);
 }
 
-function actionWork() {
-  if (gameState.energy < 15) {
-    log("Você não tem energia suficiente para trabalhar.");
-    return;
+function sellAll() {
+  let total = 0;
+  for (let crop in gameState.harvest) {
+    total += gameState.harvest[crop] * cropsData[crop].sellPrice;
+    gameState.harvest[crop] = 0;
   }
-
-  gameState.energy -= 15;
-  gameState.inventory.madeira += 1;
-  gameState.inventory.pedra += 1;
-  addXP(15);
-  log("Você trabalhou duro limpando a área e conseguiu madeira e pedra!");
-  addTime(3);
-}
-
-function changeLocation() {
-  currentLocationIndex = (currentLocationIndex + 1) % locations.length;
-  log(`Você caminhou até: ${locations[currentLocationIndex]}.`);
-  addTime(1);
+  if (total > 0) {
+    gameState.gold += total;
+    log(`Você vendeu sua colheita por ${total}g!`);
+  } else {
+    log("Você não tem produtos para vender.");
+  }
+  updateUI();
 }
 
 function actionRest() {
-  autoSleep();
-  log("Você dormiu profundamente. Um novo dia começa!");
-}
-
-function autoSleep() {
   gameState.day++;
   gameState.hour = 6;
   gameState.energy = 100;
+
+  // Atualiza crescimento das plantas
+  gameState.plots.forEach(plot => {
+    if (plot.crop && plot.watered) {
+      const daysPassed = gameState.day - plot.dayPlanted;
+      if (daysPassed >= cropsData[plot.crop].growDays) {
+        plot.ready = true;
+      }
+      plot.watered = false; // Solo seca no novo dia
+    }
+  });
+
+  log("Novo dia! Suas plantas regadas cresceram.");
+  updateUI();
+}
+
+function addTime(hours) {
+  gameState.hour += hours;
+  if (gameState.hour >= 22) {
+    log("Ficou tarde demais! Você dormiu de cansaço.");
+    actionRest();
+  }
   updateUI();
 }
 
